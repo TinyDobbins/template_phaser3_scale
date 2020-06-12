@@ -4,8 +4,10 @@ class Preloader extends Phaser.Scene {
     }
 
     preload() {
-        this.preloader_back = this.add.image(320, 480, 'preloader_back');
-        this.preloader_bar = this.add.image(320, 480, 'preloader_bar');
+        const midX = this.cameras.main.centerX;
+
+        this.preloader_back = this.add.image(midX, 480, 'preloader_back');
+        this.preloader_bar = this.add.image(midX, 480, 'preloader_bar');
 
         this.preloader_crop = new Phaser.Geom.Rectangle(0, 0, 0, this.preloader_bar.height);
         this.preloader_bar.setCrop(this.preloader_crop);
@@ -62,9 +64,6 @@ class Preloader extends Phaser.Scene {
     }
 
     create() {
-		// EPT.Sfx.manage('music', 'init', this);
-		// EPT.Sfx.manage('sound', 'init', this);
-		// EPT.fadeOutScene('Menu', this);
-        EPT.fadeOutScene('BackgroundScene', this);
+        EPT.fadeOutScene('Menu', this);
 	}
 }
