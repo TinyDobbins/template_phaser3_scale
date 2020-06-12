@@ -52,8 +52,8 @@ class Menu extends Phaser.Scene {
 
         const camera = this.cameras.main;
 
-        //TODO isntead of manually update position of all objects,
-        //may be better to update main camera position?
+        // TODO: instead of manually updating position of all objects,
+        // may be better to update main camera position?
 
         this.safeArea.x = camera.width / 2 - this.game.config.width / 2;
         this.back.x = camera.centerX;
