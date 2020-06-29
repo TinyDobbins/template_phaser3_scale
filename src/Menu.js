@@ -1,17 +1,52 @@
 class Menu extends Phaser.Scene {
+    GAME_WIDTH = 640;
+    GAME_HEIGHT = 960;
+
+    backgroundScene;
+    parent;
+    sizer;
+    layerMain;
 
     constructor() {
         super('Menu');
     }
 
     create() {
-        const midX = this.cameras.main.centerX;
+        MainGame.state = this;
 
-        var back = this.add.sprite(midX, 0, 'bg');
-        back.setOrigin(0.5, 0);
+        const width = this.scale.gameSize.width;
+        const height = this.scale.gameSize.height;
 
-        var title = this.add.sprite(midX, 480, 'logo');
+        this.parent = new Phaser.Structs.Size(width, height);
+        this.sizer = new Phaser.Structs.Size(this.GAME_WIDTH, this.GAME_HEIGHT, Phaser.Structs.Size.FIT, this.parent);
+
+        this.parent.setSize(width, height);
+        this.sizer.setSize(width, height);
+
+        this.scale.on('resize', this.resize, this);
+
+        //======================================================================
+
+        const midX = this.GAME_WIDTH*0.5;
+        // console.log('midX', this.cameras.main.centerX);
+
+        // var back = this.add.sprite(this.GAME_WIDTH*0.5, 0, 'bg');
+        // back.setOrigin(0.5, 0);
+
+        this.layerMain = this.add.container();
+
+        const bg = this.add.image(0, 0, 'bg');
+        bg.setOrigin(0.5, 0);
+        this.layerMain.add(bg);
+
+        // const guide = this.add.image(0, 0, 'guide').setOrigin(0, 0).setDepth(1);
+        const guide = this.add.image(0, 0, 'guide').setDepth(1);
+        guide.setOrigin(0.5, 0);
+        this.layerMain.add(guide);
+
+        var title = this.add.sprite(0, 480, 'logo');
         title.setOrigin(0.5);
+        this.layerMain.add(title);
 
         title.setInteractive({ useHandCursor: true });
         title.on('pointerup', this.clickStart, this);
@@ -21,43 +56,63 @@ class Menu extends Phaser.Scene {
 
         this.cameras.main.fadeIn(200);
 
-        this.addSafeArea();
-
         this.title = title;
-        this.back = back;
 
-        this.scale.on('resize', this.resize, this);
+        this.scoreText = this.add.text(0, 8, 'score: 0', { fontSize: '32px', fill: '#ff0000' });
+        this.layerMain.add(this.scoreText);
+
+        //======================================================================
+        this.updateCamera();
     }
 
-    addSafeArea() {
-        // draw safe area
-        this.safeArea = this.add.rectangle(
-            this.cameras.main.width / 2 - +this.game.config.width / 2,
-            0,
-            this.game.config.width,
-            this.game.config.height,
-            0x0000ff,
-            0.3
-        )
-        .setStrokeStyle(10, 0x0000ff, 0.7)
-        .setOrigin(0)
-        .setDepth(2)
-        .setScrollFactor(0)
+    getZoom ()
+    {
+        return this.cameras.main.zoom;
+    }
+
+    updateCamera ()
+    {
+        // const camera = this.cameras.main;
+
+        const width = this.scale.gameSize.width;
+        const height = this.scale.gameSize.height;
+
+        var deltaY = Math.ceil(this.parent.height - this.sizer.height) * 0.5;
+
+        console.log('this.parent.height',this.parent.height,'this.sizer.height',this.sizer.height);
+
+        // const x = Math.ceil((this.parent.width - this.sizer.width) * 0.5);
+        // const y = 0;
+
+        const scaleX = this.sizer.width / this.GAME_WIDTH;
+        const scaleY = this.sizer.height / this.GAME_HEIGHT;
+
+        // camera.setViewport(x, y, this.sizer.width, this.sizer.height);
+        // camera.setZoom(Math.max(scaleX, scaleY));
+        // camera.centerOn(this.GAME_WIDTH / 2, this.GAME_HEIGHT / 2);
+
+        const zoom = Math.max(scaleX, scaleY);
+        const offset = 120 * zoom;
+
+        this.layerMain.x = width / 2;
+        this.layerMain.y = 0;
+        // this.layerMain.y = (height / 2) - deltaY;
+        this.layerMain.setScale(zoom);
 
     }
+
 
     resize (gameSize)
     {
         console.log('resize Menu scene');
 
-        const camera = this.cameras.main;
+        const width = gameSize.width;
+        const height = gameSize.height;
 
-        // TODO: instead of manually updating position of all objects,
-        // may be better to update main camera position?
+        this.parent.setSize(width, height);
+        this.sizer.setSize(width, height);
 
-        this.safeArea.x = camera.width / 2 - this.game.config.width / 2;
-        this.back.x = camera.centerX;
-        this.title.x = camera.centerX;
+        this.updateCamera();
 
     }
 

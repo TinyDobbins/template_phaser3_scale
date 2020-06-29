@@ -19,6 +19,7 @@ class Preloader extends Phaser.Scene {
 			'image': [
 				['logo', 'assets/logo.png'],
 				['bg', 'assets/background/bg.png'],
+				['guide', 'assets/background/640x960-guide.png']
 			]
 		};
 
