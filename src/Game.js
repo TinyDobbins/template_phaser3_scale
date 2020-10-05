@@ -15,10 +15,7 @@ class Game extends Phaser.Scene {
 
         this.parent.setSize(width, height);
         this.sizer.setSize(width, height);
-
-        this.scale.on('resize', this.resize, this);
-
-
+        
         this.layerMain = this.add.container();
 
         const bg = this.add.image(0, 0, 'bg');
